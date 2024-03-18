@@ -26,9 +26,11 @@
     "hardhat": "^2.19.5"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.7.6",
-    "axios": "^1.6.7",
+    "@openzeppelin/contracts": "^4.9.6",
+    "axios": "^1.6.8",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.1",
+    "express": "^4.18.3",
     "hardhat-verify": "^1.0.0"
   }
 }
