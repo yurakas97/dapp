@@ -5,7 +5,7 @@ This project uses ERC20, and ERC721 token standards, oppenZeppelin lib. and cust
 **The key idea** is to mint the original NFT based on randomly gotten jokes on the Optimism network, and write that joke as metadata of the NFT. Then user could bridge the NFT to the BASE network through IBC channel. The process of bridging means sending a packet with joke info to the BASE and automatically minting a new NFT with the same metadata, while the original one is burned. 
 
 
-**Proof of ineraction**:
+**Proof of interaction**:
 
 EVM wallet address: ```0x633DCc2b348D0343B8071ced530E3c32171Ce2B9```. 
 
