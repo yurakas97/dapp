@@ -5,12 +5,29 @@ pragma solidity ^0.8.9;
 import "../base/CustomChanIbcApp.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/utils/Strings.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
+
 /**
  * @title nft-mint
  * @dev Implements minting process,
  * and ability to send cross-chain instruction to mint NFT on counterparty
  */
-contract OptContract is CustomChanIbcApp {
+contract OptContract is ERC721, CustomChanIbcApp, ERC721Burnable {
+    using Strings for uint256;
+    using Counters for Counters.Counter;
+    Counters.Counter private currentTokenId;
+
+    // Optional mapping for token URIs
+    mapping(uint256 => string) private _tokenURIs;
+
+    // Base URI
+    string private _baseURIextended;
+    uint256 public tokenID;
+
     enum IbcPacketStatus {
         UNSENT,
         SENT,
@@ -18,41 +35,8 @@ contract OptContract is CustomChanIbcApp {
         TIMEOUT
     }
 
-    struct Voter {
-        uint weight; // weight is accumulated by delegation
-        bool voted; // if true, that person already voted;
-        address delegate; // person delegated to
-        uint vote; // index of the voted proposal
-        // additional
-        IbcPacketStatus ibcPacketStatus;
-        uint[] voteNFTIds;
-    }
-
-    struct Proposal {
-        // If you can limit the length to a certain number of bytes,
-        // always use one of bytes1 to bytes32 because they are much cheaper
-        bytes32 name; // short name (up to 32 bytes)
-        uint voteCount; // number of accumulated votes
-    }
-
     address public chairperson;
 
-    mapping(address => Voter) public voters;
-
-    Proposal[] public proposals;
-
-    modifier onlyChairperson() {
-        require(msg.sender == chairperson, "Not chairperson.");
-        _;
-    }
-
-    event Voted(address indexed voter, uint proposal); // Exposing the vote information for debugging; hide in production if you want private voting
-    event SendVoteInfo(
-        bytes32 channelId,
-        address indexed voter,
-        string str,
-        uint proposal
-    );
     event AckNFTMint(
         bytes32 channelId,
         uint sequence,
@@ -68,54 +52,8 @@ contract OptContract is CustomChanIbcApp {
     constructor(
         IbcDispatcher _dispatcher,
         bytes32[] memory proposalNames
-    ) CustomChanIbcApp(_dispatcher) {
+    ) CustomChanIbcApp(_dispatcher) ERC721("JokeNFT", "JNFT") {
         chairperson = msg.sender;
-        voters[chairperson].weight = 1;
-
-        for (uint i = 0; i < proposalNames.length; i++) {
-            // 'Proposal({...})' creates a temporary
-            // Proposal object and 'proposals.push(...)'
-            // appends it to the end of 'proposals'.
-            proposals.push(Proposal({name: proposalNames[i], voteCount: 0}));
-        }
-    }
-
-    /**
-     * @dev Give 'voter' the right to vote on this ballot. May only be called by 'chairperson'.
-     * @param voter address of voter
-     */
-    function giveRightToVote(address voter) public {
-        require(
-            msg.sender == chairperson,
-            "Only chairperson can give right to vote."
-        );
-        require(!voters[voter].voted, "The voter already voted.");
-        require(voters[voter].weight == 0);
-        voters[voter].weight = 1;
-    }
-
-    /**
-     * @dev Give your vote (including votes delegated to you) to proposal 'proposals[proposal].name'.
-     * @param proposal index of proposal in the proposals array
-     */
-    function vote(uint proposal) public {
-        Voter storage sender = voters[msg.sender];
-        // FOR TESTING ONLY
-        // ----------------
-        sender.weight = 1;
-        sender.ibcPacketStatus = IbcPacketStatus.UNSENT;
-        require(sender.weight != 0, "Has no right to vote");
-        // require(!sender.voted, "Already voted.");
-        // ----------------
-        sender.voted = true;
-        sender.vote = proposal;
-
-        // If 'proposal' is out of the range of the array,
-        // this will throw automatically and revert all
-        // changes.
-        proposals[proposal].voteCount += sender.weight;
-
-        emit Voted(msg.sender, proposal);
     }
 
     // IBC methods
@@ -132,26 +70,16 @@ contract OptContract is CustomChanIbcApp {
         uint64 timeoutSeconds,
         address voterAddress,
         string memory str
-    ) external //address recipient
-    {
-        Voter storage voter = voters[voterAddress];
-        require(
-            voter.ibcPacketStatus == IbcPacketStatus.UNSENT ||
-                voter.ibcPacketStatus == IbcPacketStatus.TIMEOUT,
-            "An IBC packet relating to his vote has already been sent. Wait for acknowledgement."
-        );
-
-        uint proposal = voter.vote;
-        bytes memory payload = abi.encode(voterAddress, str);
+    ) external {
+        string memory jokeFromId = _jokes[tokenID];
+        address owner = _minter[tokenID];
+        bytes memory payload = abi.encode(owner, jokeFromId);
 
         uint64 timeoutTimestamp = uint64(
             (block.timestamp + timeoutSeconds) * 1000000000
         );
 
         dispatcher.sendPacket(channelId, payload, timeoutTimestamp);
-        voter.ibcPacketStatus = IbcPacketStatus.SENT;
-
-        emit SendVoteInfo(channelId, voterAddress, str, proposal);
     }
 
     function onRecvPacket(
@@ -183,8 +111,6 @@ contract OptContract is CustomChanIbcApp {
             ack.data,
             (address, uint256)
         );
-        voters[voterAddress].ibcPacketStatus = IbcPacketStatus.ACKED;
-        voters[voterAddress].voteNFTIds.push(voteNFTid);
 
         emit AckNFTMint(
             packet.src.channelId,
@@ -199,5 +125,69 @@ contract OptContract is CustomChanIbcApp {
     ) external override onlyIbcDispatcher {
         timeoutPackets.push(packet);
         // do logic
+    }
+
+    function setBaseURI(string memory baseURI_) external {
+        _baseURIextended = baseURI_;
+    }
+
+    function _setTokenURI(
+        uint256 tokenId,
+        string memory _tokenURI
+    ) internal virtual {
+        //require(_exists(tokenId), "ERC721Metadata: URI set of nonexistent token");
+        _tokenURIs[tokenId] = _tokenURI;
+    }
+
+    function _baseURI() internal view virtual override returns (string memory) {
+        return _baseURIextended;
+    }
+
+    function tokenURI(
+        uint256 tokenId
+    ) public view virtual override returns (string memory) {
+        //require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+
+        string memory _tokenURI = _tokenURIs[tokenId];
+        string memory base = _baseURI();
+
+        // If there is no base URI, return the token URI.
+        if (bytes(base).length == 0) {
+            return _tokenURI;
+        }
+        // If both are set, concatenate the baseURI and tokenURI (via abi.encodePacked).
+        if (bytes(_tokenURI).length > 0) {
+            return string(abi.encodePacked(base, _tokenURI));
+        }
+        // If there is a baseURI but no tokenURI, concatenate the tokenID to the baseURI.
+        return string(abi.encodePacked(base, tokenId.toString()));
+    }
+
+    mapping(uint256 => string) public _jokes;
+    mapping(uint256 => address) public _minter;
+
+    function mint(string memory tokenURI_) external {
+        address _to = msg.sender;
+        currentTokenId.increment();
+        uint256 tokenId = currentTokenId.current();
+        _mint(_to, tokenId);
+        _setTokenURI(tokenId, tokenURI_);
+        _jokes[tokenId] = tokenURI_;
+        tokenID = tokenId;
+        _minter[tokenId] = msg.sender;
+    }
+
+    mapping(uint256 => bool) private _activeTokens;
+
+    // Функція для погашення NFT за його ID
+    function burn(uint256 tokenId) public virtual override {
+        address owner = ownerOf(tokenId);
+        require(
+            msg.sender == owner,
+            "ERC721: caller is not owner nor approved"
+        );
+
+        _burn(tokenId);
+        _activeTokens[tokenId] = false;
     }
 }

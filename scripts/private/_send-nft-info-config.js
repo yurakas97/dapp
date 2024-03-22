@@ -7,20 +7,20 @@ const fs = require('fs');
 
 
 
-let jokeLine = "";
+//let jokeLine = "";
 
-for (let i = 2; i < process.argv.length; i++) {
-    jokeLine += process.argv[i] + "_";
-}
+// for (let i = 2; i < process.argv.length; i++) {
+//     jokeLine += process.argv[i] + "_";
+// }
 // Дані для запису у файл конфігурації
-const configData = {
-    content: jokeLine
-};
+// const configData = {
+//     content: jokeLine
+// };
 // Шлях до файлу конфігурації
-const configPath = 'jokes-config.json';
+//const configPath = 'jokes-config.json';
 // Запис даних у файл конфігурації
-fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
-console.log('Дані успішно записано у файл конфігурації.');
+//fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
+//console.log('Дані успішно записано у файл конфігурації.');
 
 
 function runSendPacketCommand(command) {
@@ -52,14 +52,14 @@ async function runSendPacket(config) {
 
     try {
         await setupIbcPacketEventListener();
-        if (config.isUniversal === true) {
-            await setupUcXBallotNFTEventListener();
-        } else if (config.isUniversal === false) {
-            await setupXBallotNFTEventListener();
-        } else {
-            console.error("❌ Invalid config value for isUniversal. Please check your config file.");
-            process.exit(1);
-        }
+        // if (config.isUniversal === true) {
+        //     await setupUcXBallotNFTEventListener();
+        // } else if (config.isUniversal === false) {
+        //     await setupXBallotNFTEventListener();
+        // } else {
+        //     console.error("❌ Invalid config value for isUniversal. Please check your config file.");
+        //     process.exit(1);
+        // }
         await runSendPacketCommand(command);
     } catch (error) {
         console.error("❌ Error sending packet: ", error);

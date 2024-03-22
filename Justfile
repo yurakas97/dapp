@@ -62,19 +62,12 @@ send-packet SOURCE:
     echo "Sending a packet with the values from the config..."
     node scripts/private/_send-packet-config.js {{SOURCE}}
 
-# Send a packet over the universal channel or a custom channel as defined in the config.json file
-# The source argument is REQUIRED;
-# Usage: just send-packet [source]
-send-vote-info:
-    echo "Sending an IBC packet with vote information to mint a Proof-of-Vote NFT..."
-    node scripts/private/_send-vote-info-config.js
 
 # Send a joke-nft over the universal channel or a custom channel as defined in the config.json file
-# The source argument is REQUIRED;
 # Usage: just send-nft-info
-send-nft-info JOKE:
+send-nft-info:
     echo "Sending an IBC packet with nft information to a NFT..."
-    node scripts/private/_send-nft-info-config.js {{JOKE}}
+    node scripts/private/_send-nft-info-config.js
 
  
 # Switch between the sim client and the client with proofs

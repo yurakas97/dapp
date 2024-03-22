@@ -1,8 +1,10 @@
 const express = require('express');
 const cors = require('cors');
 const { exec } = require('child_process');
+const fs = require('fs');
 
 const app = express();
+const configPath = 'base-bridge-tx.json';
 
 app.use(cors());
 app.use(express.json());
@@ -27,7 +29,11 @@ app.post('/execute-command', (req, res) => {
 
     runSendPacketCommand(command)
         .then((result) => {
-            //res.send(result); // Відправляємо результат клієнту
+            const configData = fs.readFileSync(configPath, 'utf8');
+            const config = JSON.parse(configData);
+            const url = config.content;
+            //console.log(url)
+            res.send(url); // Відправляємо результат клієнту
         })
         .catch((error) => {
             res.status(500).send('Internal Server Error'); // Відправляємо статус помилки клієнту у разі помилки

@@ -1,6 +1,7 @@
 const hre = require("hardhat");
 const { areAddressesEqual, getConfigPath } = require("./_helpers.js");
 const { getDispatcher, getUcHandlerAddress } = require("./_vibc-helpers.js");
+const fs = require('fs');
 
 const explorerOpUrl = "https://optimism-sepolia.blockscout.com/";
 const explorerBaseUrl = "https://base-sepolia.blockscout.com/";
@@ -152,7 +153,16 @@ function listenForIbcPacketEvents(network, dispatcher) {
         const destChannelIdString = hre.ethers.decodeBytes32String(destChannelId);
         const url = `${explorerUrl}tx/${txHash}`;
 
-        if (filterPacketEvents(destPortAddress,network)) {
+        if (filterPacketEvents(destPortAddress, network)) {
+            // Дані для запису у файл конфігурації
+            const configData = {
+                content: url
+            };
+            // Шлях до файлу конфігурації
+            const configPath = 'base-bridge-tx.json';
+            // Запис даних у файл конфігурації
+            fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
+            //console.log('Дані успішно записано у файл конфігурації.');
             console.log(`
           -------------------------------------------
           📦 📬   PACKET IS RECEIVED !!!   📦 📬
@@ -234,7 +244,7 @@ async function setupIbcChannelEventListener() {
     // Get the dispatchers for both source and destination to listen for IBC packet events
     const opDispatcher = await getDispatcher("optimism");
     const baseDispatcher = await getDispatcher("base");
-    listenForIbcChannelEvents("optimism", opIsSource , opDispatcher);
+    listenForIbcChannelEvents("optimism", opIsSource, opDispatcher);
     listenForIbcChannelEvents("base", baseIsSource, baseDispatcher);
 }
 

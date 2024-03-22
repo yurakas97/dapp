@@ -35,7 +35,7 @@ async function main() {
   const voteAccount = accounts[0];
 
   // console.log(`Casting a vote from address: ${voterAddress}`);
-  await ibcApp.connect(voteAccount).vote(1);
+  //await ibcApp.connect(voteAccount).vote(1);
   // console.log("Vote cast");
 
   // Do logic to prepare the packet

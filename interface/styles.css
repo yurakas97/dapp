@@ -147,8 +147,23 @@ h2 {
     margin: 20px;
 }
 
+.succesedBridge-textBlock {
+    margin: 20px;
+}
+
+.succesedBridge {
+    background-color: rgb(61, 133, 28);
+    position: absolute;
+    font-weight: 300;
+    border-radius: 10px;
+    top: 10px;
+    left: 50%;
+    transform: translate(-50%, 0);
+    transition: .3s;
+}
+
 .tx-hidden {
-    transform: translate(-50%, -100px);
+    transform: translate(-50%, -120px);
     transition: .3s;
 }
 
@@ -174,4 +189,36 @@ h2 {
 
 .succesedMint-textBlock a {
     color: white;
+}
+
+.loader {
+
+    border: 6px solid #f3f3f3;
+    /* Ширина кругового об'єкта */
+    border-top: 6px solid rgb(61, 133, 28);
+    /* Колір кругового об'єкта */
+    border-radius: 50%;
+    /* Скруглення круга, щоб він виглядав як круг */
+    width: 16px;
+    /* Розмір колесика загрузки */
+    height: 16px;
+    /* Розмір колесика загрузки */
+    animation: spin 2s ease-in-out infinite;
+    /* Анімація обертання */
+    margin: auto;
+    margin-top: 5px;
+    /* Центруємо колесико загрузки на сторінці */
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    /* Початковий поворот */
+    100% {
+        transform: rotate(360deg);
+    }
+
+    /* Кінцевий поворот */
 }
