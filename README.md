@@ -115,4 +115,4 @@ To interact with any of the demos, there are a couple of things to do. (Assuming
 - Then run ```just do-it-main``` as many times as you wish to create and bridge Joke NFT through IBC.
 7. Use the Live Server extension (VSCode) to run or just open the ```interface/index.html``` file through the browser to start the UI/UX interface
 - Run a local server ```node app.js``` that listens to requests from the web page and sends packets through IBC.
-- And go to the web page and interact with UI/UX interface which do the same
+- Go to the web page and interact with the UI/UX interface that does the same as above.
