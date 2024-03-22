@@ -2,7 +2,7 @@
 
 This project uses ERC20, and ERC721 token standards, oppenZeppelin lib. and custom solydity smart-contracts.
 
-**The key idea** is to mint the original NFT based on randomly gotten jokes on the Optimism network, and write that joke as metadata of the NFT. Then user could bridge the NFT to the BASE network through IBC channel. The process of bridging means sending a packet with joke info to the BASE and automatically minting a new NFT with the same metadata, while the original one is burned. 
+**The key idea** is to mint the original NFT based on randomly gotten jokes on the Optimism network, and write that joke as metadata of the NFT. Then user could bridge the NFT to the BASE network through IBC channel. The process of bridging means sending a packet with the user's wallet address, and joke as a string (from saved mapping in a smart contract by token ID or through IBC as well) to the BASE and automatically minting(after the packet receiving) a new NFT with the same metadata, while the original one is burnt.
 
 
 **Proof of interaction**:
@@ -89,7 +89,7 @@ Also run `npm install` additionally.
 
 ## 💻 Interacting with demos
 
-To interact with any of the demos, there's a couple of things to do. (Assuming the dependencies have been installed).
+To interact with any of the demos, there are a couple of things to do. (Assuming the dependencies have been installed).
 
 1. Convert the `.env.example` file into an `.env` file. This will ignore the file for future git commits as well as expose the environment variables. Add your private keys and update the other values if you want to customize (advanced usage feature).
 
@@ -107,6 +107,6 @@ To interact with any of the demos, there's a couple of things to do. (Assuming t
 6. ```just set-contracts base BaseContract false```
 7. ```just deploy optimism base``` to deploy
 8. ```just create-channel``` to create a custom IBC channel
-9. run the live server of the ```interface/index.html``` to start the UI/UX interface
+9. use the Live Server extension (VSCode) to run or just open the ```interface/index.html``` file through the browser to start the UI/UX interface
 10. ```node app.js``` runs a local server that listens to requests from the web page and sends packets through IBC. 
 
