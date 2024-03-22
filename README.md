@@ -104,7 +104,8 @@ To interact with any of the demos, there are a couple of things to do. (Assuming
 3. ```CONFIG_PATH='config/jokes-config.json' ```  
 4. ```nvm use 20```
 
-**There're a couple way to run and interact 5 or 6 or 7:**
+**There're a couple way to run and interact, option 5 or 6 or 7:**
+
 5. Run just file to put everything together: ```just do-it``` (will cover all functionality: contract deployment, channel creation, NFT minting and packet sending)
 6. Run a contract creating and deployment:
 - ```just set-contracts optimism OptContract``` and
