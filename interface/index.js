@@ -20,7 +20,7 @@ let currentTokenID;
 
 async function executeCommand() {
   const command = "node scripts/private/_send-nft-info-config.js";
-  await fetch('https://sweeping-forcibly-gannet.ngrok-free.app/execute-command', {
+  await fetch('http://localhost:3000/execute-command', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
