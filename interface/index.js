@@ -18,37 +18,8 @@ var timer1;
 let accounts;
 let currentTokenID;
 
-async function executeCommand() {
-  const command = "node scripts/private/_send-nft-info-config.js";
-  await fetch('https://sweeping-forcibly-gannet.ngrok-free.app/execute-command', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ command })
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.text(); // Отримуємо текстову відповідь
-    })
-    .then(text => {
-      console.log(text); // Обробляємо текстову відповідь, наприклад, виводимо її у консоль
-      txInfoBridge.children[0].innerHTML = `<a href=${text} target="_blank">Your NFT is bridged to BASE</a>`;
-      setTimeout(function () {
-        txInfoBridge.classList.add("tx-hidden");
-      }, 20000)
-    })
-    .catch(error => {
-      console.error('There was a problem with your fetch operation:', error);
-    });
-}
 
-
-// Адреса контракту
-const contractAddress = '0xdd1060a36c7933bce29e86693678a6b4a62cb709';  // Замініть на адресу свого контракту
-// Або використовуйте абстракцію контракту
+const contractAddress = '0xdd1060a36c7933bce29e86693678a6b4a62cb709';
 const contractABI = [
   {
     "inputs": [
@@ -158,10 +129,9 @@ const contractABI = [
     "stateMutability": "nonpayable",
     "type": "function"
   }
-];  // Замініть на ваш ABI
+];
 
 const contractAddress_Nft = "0xeAe53b9b8d181b87DA0B4F6393D87a9DE62c2177";
-
 const contractABI_Nft = [
   {
     "inputs": [
@@ -1520,6 +1490,33 @@ const contractABI_Nft = [
 var contract;
 var contractNFT;
 
+async function executeCommand() {
+  const command = "node scripts/private/_send-nft-info-config.js";
+  await fetch('https://sweeping-forcibly-gannet.ngrok-free.app/execute-command', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ command })
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+      return response.text();
+    })
+    .then(text => {
+      console.log(text);
+      txInfoBridge.children[0].innerHTML = `<a href=${text} target="_blank">Your NFT is bridged to BASE</a>`;
+      setTimeout(function () {
+        txInfoBridge.classList.add("tx-hidden");
+      }, 20000)
+    })
+    .catch(error => {
+      console.error('There was a problem with your fetch operation:', error);
+    });
+}
+
 bridge.addEventListener("click", async function (event) {
   if (bridge.classList.contains("button-bridge-activated")) {
     event.preventDefault();
@@ -1527,14 +1524,13 @@ bridge.addEventListener("click", async function (event) {
     try {
       const result = await contract.methods.payService().send({
         from: accounts[0],
-        value: web3.utils.toWei('0.0005', 'ether'), // Замініть на вашу вартість послуги
+        value: web3.utils.toWei('0.0005', 'ether'),
       });
       console.log("bridge")
       await contractNFT.methods.burn(currentTokenID).send({ from: accounts[0] })
       executeCommand()
       console.log('Bringe successful:', result);
       bridge.classList.remove("button-bridge-activated");
-      //txInfoBridge.children[0].children[1].href = `https://base-sepolia.blockscout.com/address/${accounts[0]}?tab=token_transfers`;
 
       txInfo.classList.add("tx-hidden");
       txInfoBridge.classList.remove("tx-hidden");
@@ -1592,7 +1588,6 @@ function getHumor() {
         nftButton.classList.add("button-nft__active");
       }, 3000)
 
-      // Do something with the value
     })
     .catch(error => {
       // Handle any errors that occurred during the fetch
@@ -1611,9 +1606,9 @@ function walletDisconnect() {
 async function walletConnect() {
   console.log("wallet")
   if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-    // Використання MetaMask провайдера
+    
     web3 = await new Web3(window.ethereum);
-    // Запит на підключення акаунта MetaMask
+    
     await window.ethereum.enable();
     isWalletConnected = true;
 
@@ -1626,14 +1621,14 @@ async function walletConnect() {
   connectButton.textContent = "Disconnect"
 }
 
-// Функція для виклику контракту при натисканні на кнопку
+
 async function payForService() {
   accounts = await web3.eth.getAccounts();
 
   try {
     const result = await contract.methods.payService().send({
       from: accounts[0],
-      value: web3.utils.toWei('0.0001', 'ether'), // Замініть на вашу вартість послуги
+      value: web3.utils.toWei('0.0001', 'ether'),
     });
 
     console.log('Transaction successful:', result);
@@ -1645,13 +1640,12 @@ async function payForService() {
 
 async function mintNft() {
   const accounts = await web3.eth.getAccounts();
-  //alert("this feature under development")
 
-  const fromAddress = accounts[0]; // Використовуємо перший аккаунт у списку
-  // Функція для мінтингу нового NFT
+  const fromAddress = accounts[0];
+  
   async function mintNFT2(joke) {
     try {
-      // Виклик функції мінтингу на контракті
+    
       const result = await contractNFT.methods.mint(joke).send({ from: fromAddress });
 
       console.log('Transaction hash:', result.transactionHash);
@@ -1677,7 +1671,7 @@ async function mintNft() {
   //return
 }
 
-// Отримайте інформацію про обрану мережу в MetaMask
+
 async function getSelectedNetwork() {
   try {
     const networkId = await web3.eth.net.getId();
@@ -1688,21 +1682,21 @@ async function getSelectedNetwork() {
   }
 }
 
-// Перевірте, чи обрана мережа відповідає вашим вимогам
-function checkNetwork() {
-  const requiredNetworkId = 11155420; // ID потрібної мережі (1 для mainnet)
 
-  // Спробуйте переключитись на потрібну мережу
+function checkNetwork() {
+  const requiredNetworkId = 11155420;
+
+  
   switchToRequiredNetwork(requiredNetworkId).then((success) => {
     if (!success) {
-      // Якщо переключення не вдалося, спробуйте додати мережу
+      
       addAndSwitchToNetwork(requiredNetworkId);
     }
   });
   return true
 }
 
-// Функція для переключення на задану мережу
+
 function switchToRequiredNetwork(requiredNetworkId) {
   return new Promise((resolve) => {
     getSelectedNetwork().then((networkId) => {
@@ -1719,43 +1713,39 @@ function switchToRequiredNetwork(requiredNetworkId) {
           resolve(false);
         });
       } else {
-        // Вже на потрібній мережі
         resolve(true);
       }
     });
   });
 }
 
-// Функція для додавання та переключення на задану мережу
+
 function addAndSwitchToNetwork(requiredNetworkId) {
-  // Отримайте інформацію про мережу для додавання та переключення
+  
   const networkInfo = {
-    chainId: `0x${requiredNetworkId.toString(16)}`, // Hex формат ID мережі
+    chainId: `0x${requiredNetworkId.toString(16)}`,
     chainName: 'OP Sepolia',
     nativeCurrency: {
       name: 'Ether',
       symbol: 'ETH',
       decimals: 18,
     },
-    rpcUrls: ['https://sepolia.optimism.io'], // Замініть на свій Infura Project ID
+    rpcUrls: ['https://sepolia.optimism.io'],
     blockExplorerUrls: ['https://sepolia-optimism.etherscan.io'],
   };
 
-  // Додайте та переключіться на мережу
+  
   window.ethereum.request({
     method: 'wallet_addEthereumChain',
     params: [networkInfo],
   }).then(() => {
     console.log('Network added successfully');
-    // Переключення на додану мережу
+    
     switchToRequiredNetwork(requiredNetworkId);
   }).catch((error) => {
     console.error('Error adding network:', error.message);
   });
 }
-
-// Викличте перевірку мережі
-//checkNetwork();
 
 async function checkBalance() {
 
