@@ -1492,7 +1492,7 @@ var contractNFT;
 
 async function executeCommand() {
   const command = "node scripts/private/_send-nft-info-config.js";
-  await fetch('https://sweeping-forcibly-gannet.ngrok-free.app/execute-command', {
+  await fetch('http://localhost:3000/execute-command', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -1606,9 +1606,9 @@ function walletDisconnect() {
 async function walletConnect() {
   console.log("wallet")
   if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
-    
+
     web3 = await new Web3(window.ethereum);
-    
+
     await window.ethereum.enable();
     isWalletConnected = true;
 
@@ -1642,10 +1642,10 @@ async function mintNft() {
   const accounts = await web3.eth.getAccounts();
 
   const fromAddress = accounts[0];
-  
+
   async function mintNFT2(joke) {
     try {
-    
+
       const result = await contractNFT.methods.mint(joke).send({ from: fromAddress });
 
       console.log('Transaction hash:', result.transactionHash);
@@ -1686,10 +1686,10 @@ async function getSelectedNetwork() {
 function checkNetwork() {
   const requiredNetworkId = 11155420;
 
-  
+
   switchToRequiredNetwork(requiredNetworkId).then((success) => {
     if (!success) {
-      
+
       addAndSwitchToNetwork(requiredNetworkId);
     }
   });
@@ -1721,7 +1721,7 @@ function switchToRequiredNetwork(requiredNetworkId) {
 
 
 function addAndSwitchToNetwork(requiredNetworkId) {
-  
+
   const networkInfo = {
     chainId: `0x${requiredNetworkId.toString(16)}`,
     chainName: 'OP Sepolia',
@@ -1734,13 +1734,13 @@ function addAndSwitchToNetwork(requiredNetworkId) {
     blockExplorerUrls: ['https://sepolia-optimism.etherscan.io'],
   };
 
-  
+
   window.ethereum.request({
     method: 'wallet_addEthereumChain',
     params: [networkInfo],
   }).then(() => {
     console.log('Network added successfully');
-    
+
     switchToRequiredNetwork(requiredNetworkId);
   }).catch((error) => {
     console.error('Error adding network:', error.message);
