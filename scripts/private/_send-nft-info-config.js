@@ -5,24 +5,6 @@ const { setupXBallotNFTEventListener } = require('../joke-nft/_app-events.js');
 const { setupUcXBallotNFTEventListener } = require('../joke-nft/_app-events-UC.js');
 const fs = require('fs');
 
-
-
-//let jokeLine = "";
-
-// for (let i = 2; i < process.argv.length; i++) {
-//     jokeLine += process.argv[i] + "_";
-// }
-// Дані для запису у файл конфігурації
-// const configData = {
-//     content: jokeLine
-// };
-// Шлях до файлу конфігурації
-//const configPath = 'jokes-config.json';
-// Запис даних у файл конфігурації
-//fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
-//console.log('Дані успішно записано у файл конфігурації.');
-
-
 function runSendPacketCommand(command) {
     return new Promise((resolve, reject) => {
         exec(command, (error, stdout, stderr) => {

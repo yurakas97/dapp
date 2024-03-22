@@ -103,10 +103,16 @@ To interact with any of the demos, there are a couple of things to do. (Assuming
 2. ```cp .env.example .env``` set up private keys and APIs, then
 3. ```CONFIG_PATH='config/jokes-config.json' ```  
 4. ```nvm use 20```
-5. ```just set-contracts optimism OptContract``` and
-6. ```just set-contracts base BaseContract false```
-7. ```just deploy optimism base``` to deploy
-8. ```just create-channel``` to create a custom IBC channel
-9. use the Live Server extension (VSCode) to run or just open the ```interface/index.html``` file through the browser to start the UI/UX interface
-10. ```node app.js``` runs a local server that listens to requests from the web page and sends packets through IBC.
-11. or ```just send-nft-info``` to transfer the last minted on Optimis NFT info through IBC
+
+**There're couple ways to run and interact, option 5 or 6 or 7:**
+
+5. Run just file to put everything together: ```just do-it``` (will cover all functionality: contract deployment, channel creation, NFT minting and packet sending)
+6. Run a contract creating and deployment:
+- ```just set-contracts optimism OptContract``` and
+- ```just set-contracts base BaseContract false```
+- ```just deploy optimism base``` to deploy.
+- ```just create-channel``` to create a custom IBC channel.
+- Then run ```just do-it-main``` as many times as you wish to create and bridge Joke NFT through IBC.
+7. Use the Live Server extension (VSCode) to run or just open the ```interface/index.html``` file through the browser to start the UI/UX interface
+- Run a local server ```node app.js``` that listens to requests from the web page and sends packets through IBC.
+- Go to the web page and interact with the UI/UX interface that does the same as above.

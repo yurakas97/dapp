@@ -5,6 +5,7 @@ const fs = require('fs');
 
 const explorerOpUrl = "https://optimism-sepolia.blockscout.com/";
 const explorerBaseUrl = "https://base-sepolia.blockscout.com/";
+const configPath = 'base-bridge-tx.json';
 
 function filterChannelEvents(portAddress) {
     const config = require(getConfigPath());
@@ -154,15 +155,11 @@ function listenForIbcPacketEvents(network, dispatcher) {
         const url = `${explorerUrl}tx/${txHash}`;
 
         if (filterPacketEvents(destPortAddress, network)) {
-            // Дані для запису у файл конфігурації
             const configData = {
                 content: url
             };
-            // Шлях до файлу конфігурації
-            const configPath = 'base-bridge-tx.json';
-            // Запис даних у файл конфігурації
             fs.writeFileSync(configPath, JSON.stringify(configData, null, 2));
-            //console.log('Дані успішно записано у файл конфігурації.');
+
             console.log(`
           -------------------------------------------
           📦 📬   PACKET IS RECEIVED !!!   📦 📬
@@ -176,6 +173,11 @@ function listenForIbcPacketEvents(network, dispatcher) {
           🧾 TxHash: ${txHash}
           🔍 Explorer URL: ${url}
           -------------------------------------------\n`);
+            console.log({
+                Status: 'The NFT on BASE is minted',
+                Explorer: `${url}`
+
+            })
             console.log(` ⏱️  Waiting for write acknowledgement...`);
         }
     });

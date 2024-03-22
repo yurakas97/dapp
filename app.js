@@ -32,11 +32,10 @@ app.post('/execute-command', (req, res) => {
             const configData = fs.readFileSync(configPath, 'utf8');
             const config = JSON.parse(configData);
             const url = config.content;
-            //console.log(url)
-            res.send(url); // Відправляємо результат клієнту
+            res.send(url);
         })
         .catch((error) => {
-            res.status(500).send('Internal Server Error'); // Відправляємо статус помилки клієнту у разі помилки
+            res.status(500).send('Internal Server Error');
         });
 });
 
