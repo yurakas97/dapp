@@ -179,7 +179,6 @@ contract OptContract is ERC721, CustomChanIbcApp, ERC721Burnable {
 
     mapping(uint256 => bool) private _activeTokens;
 
-    // Функція для погашення NFT за його ID
     function burn(uint256 tokenId) public virtual override {
         address owner = ownerOf(tokenId);
         require(

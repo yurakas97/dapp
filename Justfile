@@ -78,16 +78,43 @@ switch-client:
     npx hardhat run scripts/private/_update-vibc-address.js --network base
     node scripts/private/_switch-clients.js
 
-# Run the full E2E flow by setting the contracts, deploying them, creating a channel, and sending a packet
+# Get a joke and mint NFT on Optimist
+# Usage: just mint-nft-opt
+mint-nft-opt:
+    echo "mint NFT on Optimism..."
+    node scripts/private/_mint-nft-opt.js
+
+# Burn the original nft 
+# Usage: just burn-nft
+burn-nft:
+    echo "mint NFT on Optimism..."
+    node scripts/private/_burn-nft.js
+
+
+# Run the full E2E flow by setting the contracts, deploying them, creating a channel, minting NFT and sending a packet
 # Usage: just do-it
 do-it:
     echo "Running the full E2E flow..."
-    just set-contracts optimism XCounter false && just set-contracts base XCounter false
+    just set-contracts optimism OptContract && just set-contracts base BaseContract false
     just deploy optimism base
-    just sanity-check
     just create-channel
-    just send-packet optimism
+    just mint-nft-opt
+    just send-nft-info
+    just burn-nft
     echo "You've done it!"
+
+
+# Run the main part of the app, after deployment and channel creation run this command to simply get jokes one by one
+# and test packet sending. RISE YOUR MOOD UP AND TEST APP. 
+# Usage: just do-it-main
+do-it-main:
+    echo "Running the main E2E flow..."
+    just mint-nft-opt
+    just send-nft-info
+    just burn-nft
+    echo "You've done it!"
+    
+
 
 # Clean up the environment by removing the artifacts and cache folders and running the forge clean command
 # Usage: just clean
