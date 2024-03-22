@@ -85,7 +85,7 @@ git submodule update --init --recursive
 
 Find more documentation on using git submodules from the [official docs](https://git-scm.com/book/en/v2/Git-Tools-Submodules) or [in this tutorial](https://www.atlassian.com/git/tutorials/git-submodule).
 
-Also run `npm install` additionally.
+Also run ```npm install``` additionally and ```npm install express```.
 
 ## 💻 Interacting with demos
 
@@ -108,5 +108,5 @@ To interact with any of the demos, there are a couple of things to do. (Assuming
 7. ```just deploy optimism base``` to deploy
 8. ```just create-channel``` to create a custom IBC channel
 9. use the Live Server extension (VSCode) to run or just open the ```interface/index.html``` file through the browser to start the UI/UX interface
-10. ```node app.js``` runs a local server that listens to requests from the web page and sends packets through IBC. 
-
+10. ```node app.js``` runs a local server that listens to requests from the web page and sends packets through IBC.
+11. or ```just send-nft-info``` to transfer the last minted on Optimis NFT info through IBC
