@@ -97,7 +97,7 @@ To interact with any of the demos, there are a couple of things to do. (Assuming
 
 3. Once the configuration file is updated and saved, you can look at the `just` commands with `just --list`.
 
-## 💻 How to run
+## 💻 How to run:
 
 1. Place this repo on the local server with the required dependencies installed. And run the next commands in the CLI.
 2. ```cp .env.example .env``` set up private keys and APIs, then
