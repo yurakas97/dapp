@@ -31,7 +31,7 @@ There's some basic information here in the README but all of the dApps found her
 
 ## 📋 Prerequisites
 
-The demo dapps repository has been based on the project structure found in the [IBC app template for Solidity](https://github.com/open-ibc/ibc-app-solidity-template) so it has the same requirements:
+The demo dApps repository has been based on the project structure found in the [IBC app template for Solidity](https://github.com/open-ibc/ibc-app-solidity-template) so it has the same requirements:
 
 - Have [git](https://git-scm.com/downloads) installed
 - Have [node](https://nodejs.org) installed (v18+)
